@@ -1,6 +1,7 @@
 import { app, dialog, Menu, shell } from "electron";
 import {
     aboutMenuItem,
+    activeWindow,
     appMenu,
     debugInfo,
     is,
@@ -22,6 +23,11 @@ const openFile = async () => {
     const json = await p(fs.readFile)(filename, "utf8");
 
     const data = JSON.parse(json);
+
+    console.log(">>>>>>>>>>>>>>>.");
+    console.log(data);
+    activeWindow().webContents.send("load", data);
+    // ipcMain.send("load", data);
 };
 
 const helpSubmenu = [
