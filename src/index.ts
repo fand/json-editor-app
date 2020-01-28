@@ -1,4 +1,5 @@
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, ipcMain, Menu } from "electron";
+import { openFile, saveFile } from "./io";
 import menu from "./menu";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
@@ -57,6 +58,13 @@ app.on("activate", () => {
     if (mainWindow === null) {
         createWindow();
     }
+});
+
+ipcMain.on("open", () => {
+    openFile();
+});
+ipcMain.on("save", (event, arg) => {
+    saveFile(arg);
 });
 
 // In this file you can include the rest of your app's specific main process

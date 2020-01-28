@@ -1,34 +1,15 @@
-import { app, dialog, Menu, shell } from "electron";
+import { app, Menu, shell } from "electron";
 import {
     aboutMenuItem,
-    activeWindow,
     appMenu,
     debugInfo,
     is,
     openNewGitHubIssue,
     openUrlMenuItem
 } from "electron-util";
-import fs from "fs";
 import path from "path";
-import p from "pify";
 import config from "./config";
-
-const openFile = async () => {
-    const res = await dialog.showOpenDialog({ properties: ["openFile"] });
-    if (res.canceled) {
-        return;
-    }
-
-    const filename = res.filePaths[0];
-    const json = await p(fs.readFile)(filename, "utf8");
-
-    const data = JSON.parse(json);
-
-    console.log(">>>>>>>>>>>>>>>.");
-    console.log(data);
-    activeWindow().webContents.send("load", data);
-    // ipcMain.send("load", data);
-};
+import { openFile } from "./io";
 
 const helpSubmenu = [
     openUrlMenuItem({

@@ -18,11 +18,32 @@ const initialJson = {
 };
 editor.set(initialJson);
 
-// get json
-const updatedJson = editor.get();
-
-ipcRenderer.on("load", (event, arg) => {
-    editor.set(arg);
+// Insert Open / Save buttons
+const mainMenu = document.querySelector(".jsoneditor-menu");
+const openButton = document.createElement("button");
+openButton.innerText = "OPEN";
+openButton.setAttribute("type", "button");
+openButton.classList.add("customButton");
+openButton.addEventListener("click", () => {
+    ipcRenderer.send("open");
 });
 
-// console.log('👋 This message is being logged by 'renderer.js', included via webpack');
+const saveButton = document.createElement("button");
+saveButton.innerText = "SAVE";
+saveButton.setAttribute("type", "button");
+saveButton.classList.add("customButton");
+saveButton.addEventListener("click", () => {
+    const updatedJson = editor.get();
+    ipcRenderer.send("save", updatedJson);
+});
+
+mainMenu.prepend(saveButton);
+mainMenu.prepend(openButton);
+
+ipcRenderer.on("loaded", (event, arg) => {
+    editor.set(arg);
+});
+ipcRenderer.on("saved", (event, arg) => {
+    // TODO: show message on menu bar or somewhere
+    console.log("Saved to", arg);
+});
