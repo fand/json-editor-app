@@ -1,6 +1,6 @@
 {
-  "name": "json-editor-2",
-  "productName": "json-editor-2",
+  "name": "json-editor-app",
+  "productName": "json-editor-app",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
@@ -78,10 +78,14 @@
     "electron": "7.1.10",
     "file-loader": "^5.0.2",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.3",
     "node-loader": "^0.6.0",
+    "prettier": "^1.19.1",
     "style-loader": "^0.23.1",
     "ts-loader": "^6.2.1",
     "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.0"
   },
   "dependencies": {
@@ -90,5 +94,16 @@
     "electron-util": "^0.13.1",
     "jsoneditor": "^8.4.1",
     "pify": "^4.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

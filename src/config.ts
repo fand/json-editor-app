@@ -1,7 +1,7 @@
-import Store from 'electron-store';
+import Store from "electron-store";
 
 export default new Store({
-  defaults: {
-    favoriteAnimal: '🦄',
-  },
+    defaults: {
+        favoriteAnimal: "🦄"
+    }
 });
