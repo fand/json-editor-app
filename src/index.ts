@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, Menu } from "electron";
-import { openFile, saveFile } from "./io";
+import { openFile, saveFile, saveFileAs } from "./io";
 import menu from "./menu";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
@@ -66,14 +66,6 @@ ipcMain.on("open", () => {
 ipcMain.on("save", (event, arg) => {
     saveFile(arg);
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-// (async () => {
-//   await app.whenReady();
-//   Menu.setApplicationMenu(menu);
-//   mainWindow = await createMainWindow();
-
-//   // const favoriteAnimal = config.get('favoriteAnimal');
-//   // mainWindow.webContents.executeJavaScript(`document.querySelector('header p').textContent = 'Your favorite animal is ${favoriteAnimal}'`);
-// })();
+ipcMain.on("saveAs", (event, arg) => {
+    saveFileAs(arg);
+});

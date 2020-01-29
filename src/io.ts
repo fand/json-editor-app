@@ -22,6 +22,7 @@ export const openFile = async () => {
     }
 
     currentFile = filename;
+    activeWindow().setTitle(`${currentFile} - JSONEditor`);
     activeWindow().webContents.send("loaded", data);
 };
 
@@ -33,6 +34,23 @@ export const saveFile = async (obj: any) => {
         }
         currentFile = res.filePath;
     }
+
+    try {
+        const json = JSON.stringify(obj);
+        await p(fs.writeFile)(currentFile, json, "utf8");
+    } catch (e) {
+        activeWindow().webContents.send("saveError", e);
+    }
+
+    activeWindow().webContents.send("saved", currentFile);
+};
+
+export const saveFileAs = async (obj: any) => {
+    const res = await dialog.showSaveDialog({});
+    if (res.canceled) {
+        return;
+    }
+    currentFile = res.filePath;
 
     try {
         const json = JSON.stringify(obj);

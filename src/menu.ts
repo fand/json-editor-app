@@ -1,7 +1,7 @@
 import { app, Menu, shell } from "electron";
 import {
     aboutMenuItem,
-    appMenu,
+    activeWindow,
     debugInfo,
     is,
     openNewGitHubIssue,
@@ -9,7 +9,7 @@ import {
 } from "electron-util";
 import path from "path";
 import config from "./config";
-import { openFile } from "./io";
+import { openFile, saveFile, saveFileAs } from "./io";
 
 const helpSubmenu = [
     openUrlMenuItem({
@@ -91,10 +91,24 @@ const macosTemplate = [
         role: "fileMenu",
         submenu: [
             {
-                accelerator: "Command+o",
+                accelerator: "Command+O",
                 label: "Open...",
                 click() {
                     openFile();
+                }
+            },
+            {
+                accelerator: "Command+S",
+                label: "Save...",
+                click() {
+                    activeWindow().webContents.send("requestSave");
+                }
+            },
+            {
+                accelerator: "Shift+Command+S",
+                label: "Save As...",
+                click() {
+                    activeWindow().webContents.send("requestSaveAs");
                 }
             },
             {
@@ -126,7 +140,25 @@ const otherTemplate = [
         role: "fileMenu",
         submenu: [
             {
-                label: "Custom"
+                accelerator: "Ctrl+O",
+                label: "Open...",
+                click() {
+                    openFile();
+                }
+            },
+            {
+                accelerator: "Ctrl+S",
+                label: "Save...",
+                click() {
+                    activeWindow().webContents.send("requestSave");
+                }
+            },
+            {
+                accelerator: "Shift+Ctrl+S",
+                label: "Save As...",
+                click() {
+                    activeWindow().webContents.send("requestSaveAs");
+                }
             },
             {
                 type: "separator"

@@ -4,19 +4,11 @@ import "./index.css";
 
 // create the editor
 const container = document.getElementById("jsoneditor");
-const options = {};
-const editor = new JSONEditor(container, options);
-
-// set json
-const initialJson = {
-    Array: [1, 2, 3],
-    Boolean: true,
-    Null: null as any,
-    Number: 123,
-    Object: { a: "b", c: "d" },
-    String: "Hello World"
-};
-editor.set(initialJson);
+const editor = new JSONEditor(container, {
+    onChangeJSON(json: any) {
+        ipcRenderer.send("change", json);
+    }
+});
 
 // Insert Open / Save buttons
 const mainMenu = document.querySelector(".jsoneditor-menu");
@@ -40,8 +32,17 @@ saveButton.addEventListener("click", () => {
 mainMenu.prepend(saveButton);
 mainMenu.prepend(openButton);
 
+ipcRenderer.on("requestSave", (event, arg) => {
+    const updatedJson = editor.get();
+    ipcRenderer.send("save", updatedJson);
+});
+ipcRenderer.on("requestSaveAs", (event, arg) => {
+    const updatedJson = editor.get();
+    ipcRenderer.send("saveAs", updatedJson);
+});
 ipcRenderer.on("loaded", (event, arg) => {
     editor.set(arg);
+    editor.expandAll();
 });
 ipcRenderer.on("saved", (event, arg) => {
     // TODO: show message on menu bar or somewhere
