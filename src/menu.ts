@@ -116,6 +116,9 @@ const macosTemplate = [
             },
             {
                 role: "close"
+            },
+            {
+                role: "quit"
             }
         ]
     },
