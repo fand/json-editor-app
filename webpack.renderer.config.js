@@ -7,7 +7,7 @@ rules.push({
 });
 rules.push({
   test: /.(jpg|jpeg|png|svg)$/,
-  use: ["file-loader"]
+  use: ["url-loader"]
 });
 
 module.exports = {
