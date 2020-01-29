@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, Menu } from "electron";
-import { openFile, saveFile, saveFileAs } from "./io";
+import { openFile, saveFile } from "./io";
 import menu from "./menu";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
@@ -9,33 +9,32 @@ if (require("electron-squirrel-startup")) {
     app.quit();
 }
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow: Electron.BrowserWindow;
+// Keep global references of the window objects.
+const windows: Electron.BrowserWindow[] = [];
 
 const createWindow = () => {
+    if (windows.length === 0) {
+        Menu.setApplicationMenu(menu);
+    }
+
     // Create the browser window.
-    mainWindow = new BrowserWindow({
+    const window = new BrowserWindow({
         height: 600,
         width: 800,
         webPreferences: { nodeIntegration: true }
     });
+    window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    windows.push(window);
 
-    // and load the index.html of the app.
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
-
-    Menu.setApplicationMenu(menu);
-
-    // Emitted when the window is closed.
-    mainWindow.on("closed", () => {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
+    // Remove the reference when the window is closed.
+    window.on("closed", () => {
+        const i = windows.indexOf(window);
+        if (i !== -1) {
+            windows.splice(i, 1);
+        }
     });
+
+    return window;
 };
 
 // This method will be called when Electron has finished
@@ -55,7 +54,7 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) {
+    if (windows.length === 0) {
         createWindow();
     }
 });
@@ -67,5 +66,11 @@ ipcMain.on("save", (event, arg) => {
     saveFile(arg);
 });
 ipcMain.on("saveAs", (event, arg) => {
-    saveFileAs(arg);
+    saveFile(arg, true);
+});
+ipcMain.on("openNewWindow", (event, filepath, content) => {
+    const win = createWindow();
+    win.webContents.on("did-finish-load", () => {
+        win.webContents.send("loaded", filepath, content);
+    });
 });

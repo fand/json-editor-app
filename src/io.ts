@@ -1,4 +1,4 @@
-import { dialog } from "electron";
+import { BrowserWindow, dialog } from "electron";
 import { activeWindow } from "electron-util";
 import fs from "fs";
 import p from "pify";
@@ -22,13 +22,12 @@ export const openFile = async () => {
     }
 
     currentFile = filepath;
-    activeWindow().setTitle(`${currentFile} - JSONEditor`);
     activeWindow().webContents.send("loaded", currentFile, data);
 };
 
-export const saveFile = async (obj: any) => {
+export const saveFile = async (obj: any, saveAsAnotherFile: boolean = false) => {
     let filepath = currentFile;
-    if (filepath === undefined) {
+    if (filepath === undefined || saveAsAnotherFile) {
         const res = await dialog.showSaveDialog({});
         if (res.canceled) {
             return;
@@ -44,23 +43,5 @@ export const saveFile = async (obj: any) => {
     }
 
     currentFile = filepath;
-    activeWindow().webContents.send("saved", currentFile);
-};
-
-export const saveFileAs = async (obj: any) => {
-    const res = await dialog.showSaveDialog({});
-    if (res.canceled) {
-        return;
-    }
-
-    try {
-        const json = JSON.stringify(obj);
-        await p(fs.writeFile)(res.filePath, json, "utf8");
-    } catch (e) {
-        activeWindow().webContents.send("saveError", res.filePath, e);
-    }
-
-    currentFile = res.filePath;
-    activeWindow().setTitle(`${currentFile} - JSONEditor`);
     activeWindow().webContents.send("saved", currentFile);
 };

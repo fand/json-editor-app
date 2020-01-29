@@ -9,7 +9,7 @@ import {
 } from "electron-util";
 import path from "path";
 import config from "./config";
-import { openFile, saveFile, saveFileAs } from "./io";
+import { openFile } from "./io";
 
 const helpSubmenu = [
     openUrlMenuItem({
