@@ -22,3 +22,19 @@ body {
     background: none;
     width: 42px;
 }
+
+.statusBar {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 100%;
+    min-height: 26px;
+    background-color: #ebebeb;
+    z-index: 10;
+    box-sizing: border-box;
+    padding: 0 5px;
+    border-top: 1px solid #3883fa;
+    color: #222222;
+    font-size: 13.333px;
+    line-height: 26px;
+}

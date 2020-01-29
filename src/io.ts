@@ -12,36 +12,38 @@ export const openFile = async () => {
     }
 
     let data;
-    let filename: string;
+    let filepath: string;
     try {
-        filename = res.filePaths[0];
-        const json = await p(fs.readFile)(filename, "utf8");
+        filepath = res.filePaths[0];
+        const json = await p(fs.readFile)(filepath, "utf8");
         data = JSON.parse(json);
     } catch (e) {
-        activeWindow().webContents.send("loadError", e);
+        activeWindow().webContents.send("loadError", filepath, e);
     }
 
-    currentFile = filename;
+    currentFile = filepath;
     activeWindow().setTitle(`${currentFile} - JSONEditor`);
-    activeWindow().webContents.send("loaded", data);
+    activeWindow().webContents.send("loaded", currentFile, data);
 };
 
 export const saveFile = async (obj: any) => {
-    if (currentFile === undefined) {
+    let filepath = currentFile;
+    if (filepath === undefined) {
         const res = await dialog.showSaveDialog({});
         if (res.canceled) {
             return;
         }
-        currentFile = res.filePath;
+        filepath = res.filePath;
     }
 
     try {
         const json = JSON.stringify(obj);
-        await p(fs.writeFile)(currentFile, json, "utf8");
+        await p(fs.writeFile)(filepath, json, "utf8");
     } catch (e) {
-        activeWindow().webContents.send("saveError", e);
+        activeWindow().webContents.send("saveError", filepath, e);
     }
 
+    currentFile = filepath;
     activeWindow().webContents.send("saved", currentFile);
 };
 
@@ -50,14 +52,15 @@ export const saveFileAs = async (obj: any) => {
     if (res.canceled) {
         return;
     }
-    currentFile = res.filePath;
 
     try {
         const json = JSON.stringify(obj);
-        await p(fs.writeFile)(currentFile, json, "utf8");
+        await p(fs.writeFile)(res.filePath, json, "utf8");
     } catch (e) {
-        activeWindow().webContents.send("saveError", e);
+        activeWindow().webContents.send("saveError", res.filePath, e);
     }
 
+    currentFile = res.filePath;
+    activeWindow().setTitle(`${currentFile} - JSONEditor`);
     activeWindow().webContents.send("saved", currentFile);
 };
