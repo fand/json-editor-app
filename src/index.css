@@ -16,6 +16,7 @@ body {
 
 .jsoneditor-menu button {
     cursor: pointer;
+    user-select: none;
 }
 
 .jsoneditor-menu .customButton {
@@ -37,4 +38,16 @@ body {
     color: #222222;
     font-size: 13.333px;
     line-height: 26px;
+    user-select: none;
+}
+
+.waitingMask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
 }
