@@ -2,24 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
+        <key>CFBundleName</key>
+        <string>JSON Editor</string>
         <key>CFBundleDocumentTypes</key>
         <array>
             <dict>
                 <key>CFBundleTypeExtensions</key>
                 <array>
                     <string>json</string>
-                    <string>JSON</string>
-                </array>
-                <key>CFBundleTypeIconFile</key>
-                <string>json.icns</string>
-                <key>CFBundleTypeMIMETypes</key>
-                <array>
-                    <string>application/json</string>
                 </array>
                 <key>CFBundleTypeName</key>
-                <string>JSON</string>
+                <string>JSON document</string>
                 <key>CFBundleTypeRole</key>
                 <string>Editor</string>
+                <key>CFBundleTypeIconFile</key>
+                <string>json.icns</string>
+                <key>LSHandlerRank</key>
+                <string>Default</string>
+                <key>LSItemContentTypes</key>
+                <array>
+                    <string>public.json</string>
+                </array>
             </dict>
         </array>
     </dict>
