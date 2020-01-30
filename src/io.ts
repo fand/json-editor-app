@@ -3,30 +3,31 @@ import { activeWindow } from "electron-util";
 import fs from "fs";
 import p from "pify";
 
-let currentFile: string | undefined;
-
-export const openFile = async () => {
+export const openFile = async (currentFile: string) => {
     const res = await dialog.showOpenDialog({ properties: ["openFile"] });
     if (res.canceled) {
         return;
     }
 
+    const filepath = res.filePaths[0];
+    if (filepath === currentFile) {
+        activeWindow().webContents.send("fileAlreadyOpened", filepath);
+        return;
+    }
+
     let data;
-    let filepath: string;
     try {
-        filepath = res.filePaths[0];
         const json = await p(fs.readFile)(filepath, "utf8");
         data = JSON.parse(json);
     } catch (e) {
         activeWindow().webContents.send("loadError", filepath, e);
+        return;
     }
 
-    currentFile = filepath;
-    activeWindow().webContents.send("loaded", currentFile, data);
+    activeWindow().webContents.send("loaded", filepath, data);
 };
 
-export const saveFile = async (obj: any, saveAsAnotherFile: boolean = false) => {
-    let filepath = currentFile;
+export const saveFile = async (filepath: string, obj: any, saveAsAnotherFile: boolean = false) => {
     if (filepath === undefined || saveAsAnotherFile) {
         const res = await dialog.showSaveDialog({});
         if (res.canceled) {
@@ -42,6 +43,11 @@ export const saveFile = async (obj: any, saveAsAnotherFile: boolean = false) => 
         activeWindow().webContents.send("saveError", filepath, e);
     }
 
-    currentFile = filepath;
-    activeWindow().webContents.send("saved", currentFile);
+    activeWindow().webContents.send("saved", filepath);
+};
+
+// Note this rejects if there are some errors
+export const readFile = async (filepath: string) => {
+    const json = await p(fs.readFile)(filepath, "utf8");
+    return JSON.parse(json);
 };

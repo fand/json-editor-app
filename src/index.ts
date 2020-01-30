@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, Menu } from "electron";
-import { openFile, saveFile } from "./io";
+import path from 'path';
+import { openFile, saveFile, readFile } from "./io";
 import menu from "./menu";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
@@ -9,15 +10,28 @@ if (require("electron-squirrel-startup")) {
     app.quit();
 }
 
+let filesToOpen: string[] = [];
+
+// File association handler for macOS
+app.on('open-file', (e, filepath) => {
+    event.preventDefault();
+    filesToOpen.push(filepath);
+});
+
+// File association handler for Windows
+if (process.argv.length > 1) {
+    filesToOpen = filesToOpen.concat(process.argv.slice(1));
+}
+
 // Keep global references of the window objects.
 const windows: Electron.BrowserWindow[] = [];
 
-const createWindow = () => {
+const createWindow = async (filepath?: string) => {
     if (windows.length === 0) {
         Menu.setApplicationMenu(menu);
     }
 
-    // Create the browser window.
+    // Create the browser window
     const window = new BrowserWindow({
         height: 600,
         width: 800,
@@ -25,6 +39,13 @@ const createWindow = () => {
     });
     window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
     windows.push(window);
+
+    if (filepath) {
+        const content = await readFile(filepath);
+        window.webContents.on("did-finish-load", () => {
+            window.webContents.send("loaded", filepath, content);
+        });
+    }
 
     // Remove the reference when the window is closed.
     window.on("closed", () => {
@@ -40,36 +61,42 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", () => {
+    if (filesToOpen.length > 0) {
+        filesToOpen.forEach((filepath) => {
+            const absPath = path.resolve(process.cwd(), filepath);
+            createWindow(absPath);
+        });
+    }
+    else {
+        createWindow();
+    }
+});
 
-// Quit when all windows are closed.
 app.on("window-all-closed", () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {
         app.quit();
     }
 });
 
 app.on("activate", () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
+    // When dock icon is clicked on macOS
     if (windows.length === 0) {
         createWindow();
     }
 });
 
-ipcMain.on("open", () => {
-    openFile();
+ipcMain.on("open", (event, currentFile) => {
+    openFile(currentFile);
 });
-ipcMain.on("save", (event, arg) => {
-    saveFile(arg);
+ipcMain.on("save", (event, currentFile, data) => {
+    saveFile(currentFile, data);
 });
-ipcMain.on("saveAs", (event, arg) => {
-    saveFile(arg, true);
+ipcMain.on("saveAs", (event, currentFile, data) => {
+    saveFile(currentFile, data, true);
 });
-ipcMain.on("openNewWindow", (event, filepath, content) => {
-    const win = createWindow();
+ipcMain.on("openNewWindow", async (event, filepath, content) => {
+    const win = await createWindow();
     win.webContents.on("did-finish-load", () => {
         win.webContents.send("loaded", filepath, content);
     });

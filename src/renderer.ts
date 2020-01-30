@@ -3,6 +3,7 @@ import JSONEditor from "jsoneditor";
 import "./index.css";
 
 // App state
+let currentFile: string;
 let isWaiting = false;
 let savedJSON = {}; // Used on window close
 
@@ -30,7 +31,7 @@ openButton.setAttribute("type", "button");
 openButton.classList.add("customButton");
 openButton.addEventListener("click", () => {
     isWaiting = true;
-    ipcRenderer.send("open");
+    ipcRenderer.send("open", currentFile);
 });
 
 const saveButton = document.createElement("button");
@@ -40,7 +41,7 @@ saveButton.classList.add("customButton");
 saveButton.addEventListener("click", () => {
     isWaiting = true;
     const updatedJson = editor.get();
-    ipcRenderer.send("save", updatedJson);
+    ipcRenderer.send("save", currentFile, updatedJson);
 });
 
 mainMenu.prepend(saveButton);
@@ -56,15 +57,19 @@ const setStatus = (status: string) => {
     statusBar.innerText = status;
 };
 
-ipcRenderer.on("requestSave", (event, arg) => {
+ipcRenderer.on("requestOpen", () => {
     isWaiting = true;
-    const updatedJson = editor.get();
-    ipcRenderer.send("save", updatedJson);
+    ipcRenderer.send("open", currentFile);
 });
-ipcRenderer.on("requestSaveAs", (event, arg) => {
+ipcRenderer.on("requestSave", () => {
     isWaiting = true;
     const updatedJson = editor.get();
-    ipcRenderer.send("saveAs", updatedJson);
+    ipcRenderer.send("save", currentFile, updatedJson);
+});
+ipcRenderer.on("requestSaveAs", () => {
+    isWaiting = true;
+    const updatedJson = editor.get();
+    ipcRenderer.send("saveAs", currentFile, updatedJson);
 });
 ipcRenderer.on("loaded", (event, filepath, content) => {
     isWaiting = false;
@@ -72,9 +77,12 @@ ipcRenderer.on("loaded", (event, filepath, content) => {
     if (isEmpty()) {
         editor.set(content);
         editor.expandAll();
+        currentFile = filepath;
+        savedJSON = content;
+
+        // Update view
         setStatus(`✅ Opened file ${filepath}`);
         document.title = `${filepath} - JSONEditor`;
-        savedJSON = content;
     }
     else {
         ipcRenderer.send('openNewWindow', filepath, content);
@@ -84,11 +92,18 @@ ipcRenderer.on("loadError", (event, filepath) => {
     isWaiting = false;
     setStatus(`⚠️ Failed to open file ${filepath}`);
 });
-ipcRenderer.on("saved", (event, filepath) => {
+ipcRenderer.on("fileAlreadyOpened", (event, filepath) => {
     isWaiting = false;
+    setStatus(`⚠️ ${filepath} is already opened.`);
+});
+ipcRenderer.on("saved", (event, filepath, content) => {
+    isWaiting = false;
+    currentFile = filepath;
     savedJSON = editor.get();
-    setStatus(`✅ Saved to ${filepath}`);
+
+    // Update view
     document.title = `${filepath} - JSONEditor`;
+    setStatus(`✅ Saved to ${filepath}`);
 });
 ipcRenderer.on("saveError", (event, filepath) => {
     isWaiting = false;

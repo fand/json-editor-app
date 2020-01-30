@@ -94,7 +94,7 @@ const macosTemplate = [
                 accelerator: "Command+O",
                 label: "Open...",
                 click() {
-                    openFile();
+                    activeWindow().webContents.send("requestOpen");
                 }
             },
             {
@@ -146,7 +146,7 @@ const otherTemplate = [
                 accelerator: "Ctrl+O",
                 label: "Open...",
                 click() {
-                    openFile();
+                    activeWindow().webContents.send("requestOpen");
                 }
             },
             {
