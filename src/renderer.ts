@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import JSONEditor from "jsoneditor";
 import "./index.css";
 
@@ -122,4 +122,29 @@ ipcRenderer.on("saved", (event, filepath, content) => {
 ipcRenderer.on("saveError", (event, filepath) => {
     setMask(false);
     setStatus(`⚠️ Failed to save file ${filepath}`);
+});
+ipcRenderer.on("requestClose", async () => {
+    let isDirty = false;
+    try {
+        isDirty = JSON.stringify(editor.get()) !== JSON.stringify(savedJSON);
+    } catch {
+        isDirty = false;
+    }
+
+    const currentWindow = remote.getCurrentWindow();
+
+    // let shouldClose = true;
+    if (isDirty) {
+        const res = await remote.dialog.showMessageBox(currentWindow, {
+            type: "question",
+            buttons: ["Yes", "No"],
+            title: "Confirm",
+            message: "Unsaved data will be lost. Are you sure you want to quit?"
+        });
+        if (res.response === 0) {
+            currentWindow.destroy();
+        }
+    } else {
+        currentWindow.destroy();
+    }
 });

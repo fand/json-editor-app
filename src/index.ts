@@ -60,6 +60,11 @@ const createWindow = (filepath?: string) => {
         }
     });
 
+    window.on("close", e => {
+        e.preventDefault();
+        window.webContents.send("requestClose");
+    });
+
     // Remove the reference when the window is closed.
     window.on("closed", () => {
         const i = windows.indexOf(window);
