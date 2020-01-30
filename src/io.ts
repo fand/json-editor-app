@@ -27,7 +27,11 @@ export const openFile = async (currentFile: string) => {
     activeWindow().webContents.send("loaded", filepath, data);
 };
 
-export const saveFile = async (filepath: string, obj: any, saveAsAnotherFile: boolean = false) => {
+export const saveFile = async (
+    filepath: string,
+    obj: any,
+    saveAsAnotherFile: boolean = false
+) => {
     if (filepath === undefined || saveAsAnotherFile) {
         const res = await dialog.showSaveDialog({});
         if (res.canceled) {
@@ -37,7 +41,7 @@ export const saveFile = async (filepath: string, obj: any, saveAsAnotherFile: bo
     }
 
     try {
-        const json = JSON.stringify(obj);
+        const json = JSON.stringify(obj, null, 2);
         await p(fs.writeFile)(filepath, json, "utf8");
     } catch (e) {
         activeWindow().webContents.send("saveError", filepath, e);
