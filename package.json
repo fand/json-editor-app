@@ -1,7 +1,7 @@
 {
   "name": "json-editor-app",
   "productName": "json-editor-app",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Dead simple JSON editor app",
   "main": ".webpack/main",
   "scripts": {
@@ -23,7 +23,7 @@
       "packagerConfig": {
         "name": "JSON Editor",
         "extendInfo": "./Info.plist",
-        "icon": "./json.icns"
+        "icon": "./icon"
       },
       "makers": [
         {

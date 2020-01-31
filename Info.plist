@@ -16,7 +16,7 @@
                 <key>CFBundleTypeRole</key>
                 <string>Editor</string>
                 <key>CFBundleTypeIconFile</key>
-                <string>json.icns</string>
+                <string>icon.icns</string>
                 <key>LSHandlerRank</key>
                 <string>Default</string>
                 <key>LSItemContentTypes</key>
