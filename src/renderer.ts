@@ -126,6 +126,10 @@ ipcRenderer.on("loaded", (event, filepath, content) => {
         setStatus(`Opening file ${filepath} in new window`);
     }
 });
+ipcRenderer.on("loadCanceled", (event) => {
+    setMask(false);
+    setStatus(`Canceled`);
+});
 ipcRenderer.on("loadError", (event, filepath) => {
     setMask(false);
     setStatus(`⚠️ Failed to open file ${filepath}`);
@@ -142,6 +146,10 @@ ipcRenderer.on("saved", (event, filepath, content) => {
     document.title = `${filepath} - JSONEditor`;
     setMask(false);
     setStatus(`✅ Saved to ${filepath}`);
+});
+ipcRenderer.on("saveCanceled", (event) => {
+    setMask(false);
+    setStatus(`Canceled`);
 });
 ipcRenderer.on("saveError", (event, filepath) => {
     setMask(false);

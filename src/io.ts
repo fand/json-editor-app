@@ -6,6 +6,7 @@ import p from "pify";
 export const openFile = async (currentFile: string) => {
     const res = await dialog.showOpenDialog({ properties: ["openFile"] });
     if (res.canceled) {
+        activeWindow().webContents.send("loadCanceled");
         return;
     }
 
@@ -35,6 +36,7 @@ export const saveFile = async (
     if (filepath === undefined || saveAsAnotherFile) {
         const res = await dialog.showSaveDialog({});
         if (res.canceled) {
+            activeWindow().webContents.send("saveCanceled");
             return;
         }
         filepath = res.filePath;
