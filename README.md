@@ -13,7 +13,7 @@ Thanks @josdejong!
 
 ## Install
 
-Download zip from [latest release page](https://github.com/fand/json-editor-exe/releases/latest).
+Download zip from [latest release page](https://github.com/fand/json-editor-app/releases/latest).
 
 ## LICENSE
 
