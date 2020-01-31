@@ -10,6 +10,7 @@ import {
 import path from "path";
 import config from "./config";
 import { openFile } from "./io";
+import { createWindow } from "./index";
 
 const helpSubmenu = [
     openUrlMenuItem({
@@ -91,6 +92,13 @@ const macosTemplate = [
         role: "fileMenu",
         submenu: [
             {
+                accelerator: "Command+N",
+                label: "New File",
+                click() {
+                    createWindow();
+                }
+            },
+            {
                 accelerator: "Command+O",
                 label: "Open...",
                 click() {
@@ -142,6 +150,13 @@ const otherTemplate = [
     {
         role: "fileMenu",
         submenu: [
+            {
+                accelerator: "Ctrl+N",
+                label: "New File",
+                click() {
+                    createWindow();
+                }
+            },
             {
                 accelerator: "Ctrl+O",
                 label: "Open...",

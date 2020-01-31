@@ -40,7 +40,7 @@ if (process.argv.length > 1) {
 // Keep global references of the window objects.
 const windows: Electron.BrowserWindow[] = [];
 
-const createWindow = (filepath?: string) => {
+export const createWindow = (filepath?: string) => {
     if (windows.length === 0) {
         Menu.setApplicationMenu(menu);
     }
@@ -121,7 +121,7 @@ ipcMain.on("save", (event, currentFile, data) => {
 ipcMain.on("saveAs", (event, currentFile, data) => {
     saveFile(currentFile, data, true);
 });
-ipcMain.on("openNewWindow", async (event, filepath, content) => {
+ipcMain.on("openNewWindow", (event, filepath, content) => {
     const win = createWindow();
     win.webContents.on("did-finish-load", () => {
         win.webContents.send("loaded", filepath, content);
