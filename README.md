@@ -1,45 +1,19 @@
-# JSON Editor
+<div align="center">
+    <h1>
+        <img src="https://user-images.githubusercontent.com/1403842/73547507-70f89d00-4482-11ea-9559-545e5f82459a.png" alt="json-editor-app logo" width="120"/><br/>
+        JSON Editor
+    </h1>
+    <i>Simple JSON Editor for Win & Mac!</i>
+</div>
 
-> Dead simple JSON editor app
+![Screenshot of json-editor-app v0.0.4 on macOS](https://user-images.githubusercontent.com/1403842/73547401-2ecf5b80-4482-11ea-8b03-753c1621c116.png)
 
+This app is just a thin wrapper of [josdejong/jsoneditor](https://github.com/josdejong/jsoneditor).
+Thanks @josdejong!
 
 ## Install
 
-*macOS 10.10+ and Windows 7+ are supported (64-bit only).*
-
-**macOS**
-
-[**Download**](https://github.com/fand/json-editor-exe/releases/latest) the `.dmg` file.
-
-*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
-
-**Windows**
-
-[**Download**](https://github.com/fand/json-editor-exe/releases/latest) the `.exe` file.
-
-
----
-
-
-## Dev
-
-Built with [Electron](https://electronjs.org).
-
-### Run
-
-```
-$ npm install
-$ npm start
-```
-
-### Publish
-
-```
-$ npm run publish
-```
-
-After Travis finishes building your app, open the release draft it created and click "Publish".
-
+Download zip from [latest release page](https://github.com/fand/json-editor-exe/releases/latest).
 
 ## LICENSE
 

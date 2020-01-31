@@ -1,8 +1,8 @@
 {
   "name": "json-editor-app",
   "productName": "json-editor-app",
-  "version": "0.0.4",
-  "description": "Dead simple JSON editor app",
+  "version": "1.0.0",
+  "description": "Simple JSON editor app for Win & Mac!",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
