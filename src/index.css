@@ -51,3 +51,14 @@ body {
     background: rgba(0, 0, 0, 0.3);
     display: none;
 }
+
+.jsoneditor-menu .previewButton {
+    background: none;
+    width: auto;
+    margin-right: 10px;
+    padding: 0 2px;
+}
+
+.jsoneditor-menu .previewButton.is-active {
+    background: rgba(0, 0, 0, 0.3);
+}

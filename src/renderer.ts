@@ -23,7 +23,6 @@ const isEmpty = (): boolean => {
 };
 
 // Insert Open / Save buttons
-const mainMenu = document.querySelector(".jsoneditor-menu");
 const openButton = document.createElement("button");
 openButton.innerText = "OPEN";
 openButton.setAttribute("type", "button");
@@ -45,8 +44,33 @@ saveButton.addEventListener("click", () => {
     setStatus(`Saving file to ${currentFile}...`);
 });
 
-mainMenu.prepend(saveButton);
-mainMenu.prepend(openButton);
+// Create preview button
+let isPreview = false;
+const previewButton = document.createElement("button");
+previewButton.innerText = "PREVIEW";
+previewButton.setAttribute("type", "button");
+previewButton.classList.add("previewButton");
+previewButton.addEventListener("click", e => {
+    isPreview = !isPreview;
+    if (isPreview) {
+        previewButton.classList.add("is-active");
+        editor.setMode("code");
+        resetMenu();
+    } else {
+        previewButton.classList.remove("is-active");
+        editor.setMode("tree");
+        resetMenu();
+    }
+});
+
+// Setup mainMenu
+const resetMenu = () => {
+    const mainMenu = document.querySelector(".jsoneditor-menu");
+    mainMenu.prepend(previewButton);
+    mainMenu.prepend(saveButton);
+    mainMenu.prepend(openButton);
+};
+resetMenu();
 
 // Create status bar
 const statusBar = document.createElement("div");
