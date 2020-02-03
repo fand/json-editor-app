@@ -1,3 +1,6 @@
+English | [日本語](./README.ja.md)
+---
+
 <div align="center">
     <h1>
         <img src="https://user-images.githubusercontent.com/1403842/73547507-70f89d00-4482-11ea-9559-545e5f82459a.png" alt="json-editor-app logo" width="120"/><br/>
